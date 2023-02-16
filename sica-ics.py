@@ -9,6 +9,8 @@ import icalendar
 
 
 COMMUNE_ID = os.environ.get('COMMUNE_ID', '24')
+EVENT_START_HOUR = int(os.environ.get('START_HOUR', '6'))
+EVENT_END_HOUR = int(os.environ.get('END_HOUR', '10'))
 
 
 def get_pickups():
@@ -26,9 +28,9 @@ def get_pickups():
         schedule = o['schedule']
         for entry in schedule:
             if entry['pickupTypes']:
-                date = datetime.datetime.strptime(entry['date'], '%Y%m%d').date()
+                dt = datetime.datetime.strptime(entry['date'], '%Y%m%d')
                 pickups = [pt['name'] for pt in entry['pickupTypes']]
-                yield date, pickups
+                yield dt, pickups
 
 
 def get_ical():
@@ -36,12 +38,12 @@ def get_ical():
     cal.add('prodid', 'sica-ics.py')
     cal.add('version', '2.0')
 
-    for date, pickups in get_pickups():
+    for dt, pickups in get_pickups():
         for pickup in pickups:
             event = icalendar.Event()
             event.add('summary', pickup)
-            event.add('dtstart', date)
-            event.add('dtend', date + datetime.timedelta(days=1))
+            event.add('dtstart', dt + datetime.timedelta(hours=EVENT_START_HOUR))
+            event.add('dtend', dt + datetime.timedelta(hours=EVENT_END_HOUR))
             cal.add_component(event)
     
     return cal.to_ical().decode('utf-8')

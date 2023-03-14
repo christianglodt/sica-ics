@@ -10,7 +10,9 @@ import icalendar
 
 COMMUNE_ID = os.environ.get('COMMUNE_ID', '24')
 EVENT_START_HOUR = int(os.environ.get('START_HOUR', '6'))
+EVENT_START_MINUTE = int(os.environ.get('START_MINUTE', '0'))
 EVENT_END_HOUR = int(os.environ.get('END_HOUR', '10'))
+EVENT_END_MINUTE = int(os.environ.get('END_MINUTE', '0'))
 
 
 def get_pickups():
@@ -42,8 +44,8 @@ def get_ical():
         for pickup in pickups:
             event = icalendar.Event()
             event.add('summary', pickup)
-            event.add('dtstart', dt + datetime.timedelta(hours=EVENT_START_HOUR))
-            event.add('dtend', dt + datetime.timedelta(hours=EVENT_END_HOUR))
+            event.add('dtstart', dt + datetime.timedelta(hours=EVENT_START_HOUR, minutes=EVENT_START_MINUTE))
+            event.add('dtend', dt + datetime.timedelta(hours=EVENT_END_HOUR, minutes=EVENT_END_MINUTE))
             cal.add_component(event)
     
     return cal.to_ical().decode('utf-8')

@@ -24,7 +24,10 @@ def get_pickups():
         raise Exception('Calendar data not found in HTML')
 
     escaped_json = escaped_json_match.group(1)
-    data = json.loads(escaped_json.replace('\\"', '"'))
+    json_txt = escaped_json.replace('\\"', '"')
+    while json_txt.startswith('\\r') or json_txt.startswith('\\n'):
+        json_txt = json_txt[2:]
+    data = json.loads(json_txt)
 
     for o in data:
         schedule = o['schedule']

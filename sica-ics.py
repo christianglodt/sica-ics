@@ -58,11 +58,14 @@ def main():
     try:
         content = get_ical()
         content_type = 'text/calendar'
+        status = '200 OK'
     except Exception as e:
         content = str(e)
         content_type = 'text/plain'
-        print('HTTP/1.1 500 Error')
+        status = '500 Error'
 
+    print(f'HTTP/1.1 {status}')
+    print(f'Status: {status}')
     print('Cache-Control: no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
     print(f'Content-Type: {content_type}')
     print('Pragma: no-cache')
